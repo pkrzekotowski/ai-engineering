@@ -1,27 +1,35 @@
 ## Goal
 **Write production-grade Python code** (readable, testable, debuggable).
 
-## Strategy
-✅ **Use LLM as your 1:1 on-demand mentor (in study mode) as you go through the curriculum.** 
+## Cadence
+- **1 shipped script / tool / API client per week**
+	- ✅ Tests included
+	- ✅ Logged, typed, structured
+	- ✅ README written
 
-💡 **Treat LLM as:**
-* **Explainer (local, contextual, inside the loop)** - docs are too abstract, you need clarity to understand something or just understand enough to move on
-	* Prompt style: *“Explain X in the context of what I’m building, not generically.”
-	* Anti-pattern: *“Teach me Python from scratch”*
-* **Pair programmer** - use it to sketch functions, refactor ugly code, suggest structure - but **you type the final code, never paste full solutions blindly**
-	* *If you didn’t write it, you don’t own it.*
+## Learning Strategy
+🧑‍🏫 **Use LLM as your 1:1 mentor** (in *study mode*) and simply go through the curriculum. 
+
+### How to use LLMs to learn Python?
+**💡Treat LLM as:****
+- **Explainer** - ask specific questions when docs are too abstract or you need clarity to understand something; make them contextual.
+	- Prompt style: *“Explain X in the context of what I’m building.”
+	- Anti-pattern: *“Teach me Python from scratch”* or other non-specific questions
+* **Pair programmer** - use LLM to sketch functions, refactor ugly code, or suggest structure - **but you type the final code, never paste full solutions blindly**
+	* *If you didn’t write it, you don’t own it. And you didn't learn it.*
 	* Anti-pattern: *“Build the whole app for me”*
-* **Debugger + rubber duck** - use it to interpret stack traces, reasoning about edge cases, explaining why something fails
+* **Debugger (rubber duck 🦆)** - use it to interpret errors, stack traces, reason about edge cases, or to explain why something fails
 	* Prompt style: *“Given this error and this code, what’s the most likely root cause?”*
-* **Reviewer** - ask: “Is this idiomatic?”, “What’s wrong with this structure?”, “Where will this break in prod?”
-	* This replaces mediocre code reviews early on.
-* **High-level architect:** you can ask about how specific stuff should be built, before you start writing a code
-	* Anti-pattern: *Letting LLM choose architecture before you understand the problem*
+	* Anti-pattern: progressing further without deep understanding why something fails
+* **Reviewer** - ask: “What’s wrong with this structure?”, “Where will this break in prod?”; try to deepen your understanding at all cost
+	* This replaces mediocre code reviews early on and gives you tight feedback loop
+* **High-level architect:** you can ask about how specific stuff *can* be built, before you start writing a single line of code
+	* Err on the side of understanding the problem first with LLM, then talk through ideas and possible solutions
 
-⚠️ **Avoid:**
-- LLM doing job for you, without deep understanding → pure laziness
-- Courses → low EV once you have a plan
-- Passive consumption (YouTube, Tutorials, long blogposts)→ dangerous
+### What to avoid when learning with LLM?
+- ⚠️ **LLM doing job for you,** without (again) understanding what's going on
+- **Passive learning**: only reading LLM answers, watching YouTube, or any kind of beginner tutorials
+
 
 **📄 Reference docs/resources tactically**
 * Map specific resource to actual learning phase
@@ -46,11 +54,6 @@
 ## Roadmap (reference only)
 ==Python roadmap==
 
-## Cadence
-- **1 shipped script / tool / API client per week**
-	- ✅ Tests included
-	- ✅ Logged, typed, structured
-	- ✅ README written
 
 ## Curriculum (~8 weeks)
 
