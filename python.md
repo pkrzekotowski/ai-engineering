@@ -2,10 +2,10 @@
 **Write production-grade Python code** (readable, testable, debuggable).
 
 ## Cadence
-- **1 shipped script / tool / API client per week**
-	- ✅ Tests included
-	- ✅ Logged, typed, structured
-	- ✅ README written
+**1 shipped script / tool / API client per week**
+- ✅ Tests included
+- ✅ Logged, typed, structured
+- ✅ README written
 
 ## Learning Strategy
 🧑‍🏫 **Use LLM as your 1:1 mentor** (in *study mode*) and simply go through the curriculum. 
