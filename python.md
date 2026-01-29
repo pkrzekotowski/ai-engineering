@@ -1,7 +1,6 @@
-# Practical Guide to Learning Python for AI Engineers
 
 ## Goal
-**Learn to write production-grade Python code** (readable, testable, debuggable) — and build foundations for AI engineering.
+**Learn to write production-grade Python code** (readable, testable, debuggable) — build foundations for AI engineering.
 
 
 ## Cadence
@@ -36,7 +35,8 @@
 
 ### What to avoid while learning?
 - ⚠️ **Letting an LLM do all the work** — copy-pasting without understanding or writing the code yourself
-- **Passive consumption** — watching YouTube, video tutorials, or beginner-oriented courses with in-browser IDEs
+- **Passive consumption** — watching YouTube, video tutorials, or beginner-oriented courses with in-browser IDEs. **It is not learning, without typing.**
+- **"I’ll learn this properly later”**  — no, you don't. At each step of the curriculum strive for understanding before you move on.
 
 > **For an optimized learning curve**, spend about 80% of your time writing code and breaking things (even intentionally) in Cursor or VS Code. Experiment, reason about why things work or fail, and stay curious about what you’re building. Use the remaining 20% for reading documentation and other resources.
 
@@ -62,6 +62,7 @@
 
 ### Pro Tip
 > **You can create a dedicated Project (Claude / ChatGPT) or Gem (Gemini) with these rules built in.** This is less redundant than restating them in every new chat.  
+> 
 > Consider adding the following to its system instructions:
 >
 > *“When I ask for a code review, always check for: (1) missing type hints, (2) lack of Pydantic validation for external data, (3) hardcoded secrets, and (4) opportunities to use `pathlib` instead of `os.path`. Be pedantic — I want code that passes MyPy in strict mode.”*
@@ -99,7 +100,7 @@
    - **Git basics**
      - `init`, `add`, `commit`, `push`, `branch`, `merge`, `.gitignore`
 
-   **Outcome:** You can start any project cleanly in under 5 minutes, and you don’t commit dirty code.
+   **Outcome:** You can start any project cleanly in under 5 minutes, install dependencies, set up the environment and create repo.
 
 
 2. **Core Python (~7 days)**
@@ -118,7 +119,7 @@
      - Type hints
      - Docstrings
 
-   **Outcome:** You can express logic clearly and idiomatically, and read other people’s Python without friction.
+   **Outcome:** You can express logic clearly and idiomatically, run small scripts and read other people’s Python without friction.
 
 
 3. **Errors, files, and data (~7 days)**
@@ -140,7 +141,7 @@
      - Log levels
      - Structured logs
 
-   **Outcome:** Bad data can’t silently enter your system, and failures are observable.
+   **Outcome:** Bad data can’t silently enter your system, logs tell you what broke, and errors don’t scare you.
 
 
 4. **Object model & structure (~7 days)**
@@ -158,7 +159,7 @@
      - `datetime`
      - `itertools`, `functools`
 
-   **Outcome:** You can structure non-trivial codebases without overengineering.
+   **Outcome:** You can structure non-trivial codebases without overengineering and know _when not to use classes_. Do **not** chase OOP purity. 
 
 
 5. **Production Python (~3 weeks)**
@@ -272,18 +273,3 @@
 - [Tenacity docs](https://tenacity.readthedocs.io/en/latest/)
 - [pytest docs](https://docs.pytest.org/en/stable/)
 - [Python Packaging Authority docs](https://www.pypa.io/en/latest/)
-
-⚠️ **Avoid**
-- Udemy / Coursera beginner courses (slow, outdated, hand-holding)
-- *Automate the Boring Stuff* (good book, wrong focus for you — scripting, not production)
-- YouTube tutorials longer than ~20 minutes (usually padded)
-- Any resource targeting Python < 3.10
-
-## Stay up to date
-- [The New Stack — Python](https://thenewstack.io/category/python/)
-- [Hacker News — Python threads](https://news.ycombinator.com)
-
-## Deep dive (opinionated, credible)
-- *Fluent Python* (2nd edition)
-- [Effective Python](https://effectivepython.com)
-- *Architecture Patterns with Python*
