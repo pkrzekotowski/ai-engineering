@@ -1,4 +1,3 @@
-
 ## Goal
 **Learn to write production-grade Python code** (readable, testable, debuggable) — build foundations for AI engineering.
 
@@ -71,7 +70,7 @@
 ## Roadmap (reference only — visual check)
 [Python Roadmap](https://roadmap.sh/python)
 
-## Curriculum (~8 weeks)
+## Curriculum (~8-10 weeks)
 
 1. **Environment & workflow (2–3 days)**
    - **Python versions** (3.10+)
@@ -162,7 +161,7 @@
    **Outcome:** You can structure non-trivial codebases without overengineering and know _when not to use classes_. Do **not** chase OOP purity. 
 
 
-5. **Production Python (~3 weeks)**
+5. **Production Python (~4 weeks)**
    - **APIs & networking**
      - `requests` (sync, baseline)
      - `httpx` (async)
@@ -173,7 +172,7 @@
      - `async / await`
      - `asyncio.gather`
      - When async is worth it (parallel I/O)
-   - **FastAPI** (basics, late in phase)
+   - **FastAPI** (basics)
      - App structure
      - Routes
      - Request / response models (reuse Pydantic)
@@ -204,38 +203,75 @@
 
 ### The "News Intelligence CLI"
 
-**Goal:** Build a command-line tool that aggregates news from an external API, validates the data, handles network instability gracefully, and provides clear visibility into its internal operations.
+**Goal:** Build a command-line tool that aggregates news from an external API, validates incoming data, survives network instability, and makes its behavior observable through structured logs.
 
-- **Environment & secure workflow**
-  - **Tooling:** Initialize the project using `uv init`.
-  - **Secrets management:**
-    - Create a `.env` file for your `NEWS_API_KEY`.
-    - Add `.env` to your `.gitignore` immediately.
-    - Use `python-dotenv` to load the key: `load_dotenv()` + `os.getenv("NEWS_API_KEY")`.
-  - **Standards:** Set up `pre-commit` to run Ruff and MyPy (strict mode) on every commit.
+#### Environment & secure workflow
+- **Tooling**
+  - Initialize the project with `uv init`
+- **Secrets management**
+  - Create a `.env` file containing `NEWS_API_KEY`
+  - Add `.env` to `.gitignore` immediately
+  - Load secrets using `python-dotenv` (`load_dotenv()` + `os.getenv`)
+- **Standards**
+  - Configure `pre-commit` to run **Ruff** (lint + format) and **MyPy** (strict mode) on every commit
 
-- **Robust data handling**
-  - **Pydantic models:** Define a `NewsArticle` schema and use it to parse raw JSON from the API.
-  - **Structured logging:** Replace all `print()` statements with `logging` or `structlog`.
-    - **Implementation:** Configure a JSON formatter so logs are machine-parsable.
-    - **Failures:** If Pydantic validation fails, log the specific fields that caused the error (context), not a generic “data error”.
+#### Core structure
+- Put all business logic in a single **core module** (e.g. `src/newsintel/core.py`)
+- Expose that logic through two thin interfaces:
+  - a **CLI entry point**
+  - a **FastAPI endpoint**
+- No duplicated logic between CLI and API
 
-- **Resilient networking & FastAPI**
-  - **Parallelism:** Use `httpx.AsyncClient` and `asyncio.gather` to fetch multiple categories (e.g. Tech, Finance, Science) concurrently.
-  - **Tenacity shield:** Decorate the fetch function to handle `429 Too Many Requests` and `504 Gateway Timeout`.
-  - **Integration:** Wrap the logic in a simple **FastAPI** endpoint (`/news/{category}`) so the tool works over HTTP as well as via CLI.
+#### Robust data handling
+- **Pydantic models**
+  - Define a `NewsArticle` schema
+  - Parse raw API JSON into typed objects
+- **Structured logging**
+  - Replace all `print()` statements with the standard `logging` module
+  - Configure JSON-formatted logs so output is machine-parsable
+- **Failure visibility**
+  - On Pydantic validation errors, log:
+    - which fields failed
+    - why they failed
+  - Never log a generic “data error” without context
 
-- **Advanced performance tracking**
-  - **Timing decorator:** Write a custom decorator to measure execution time of API calls.
-  - **Standard library:** Use `time.perf_counter()` for high-precision timing.
-  - **Output:** Log timing data at the `DEBUG` level to observe performance without polluting production logs.
+#### Resilient networking
+- **Parallelism**
+  - Use `httpx.AsyncClient` with `asyncio.gather` to fetch multiple categories (e.g. Tech, Finance, Science) concurrently
+- **Retry strategy**
+  - Use **Tenacity** to wrap network calls:
+    - exponential backoff
+    - capped retry attempts (e.g. max 5)
+    - retries for `429 Too Many Requests` and `504 Gateway Timeout`
+  - Log every retry attempt with attempt count and delay
 
+#### API exposure (minimal)
+- Wrap the core logic in a simple **FastAPI** app
+  - Endpoint: `/news/{category}`
+  - Reuse Pydantic models for request / response schemas
+- Local execution only (no deployment concerns)
 
-### 🏆 Success Criteria
-- **Observable:** Can I see retry attempts in my logs?
-- **Secure:** Is my API key absent from my GitHub history?
-- **Typed:** Does MyPy return zero errors when run in strict mode?
-- **Resilient:** If I turn off Wi-Fi, does the app retry and then exit with a clear error message instead of a messy stack trace?
+#### Testing
+- **Validation tests**
+  - Unit-test Pydantic models with valid and invalid payloads
+- **Networking tests**
+  - Use `pytest` + `respx` (or `pytest-httpx`) to mock `httpx` calls
+  - Ensure tests never hit the real external API
+- **Failure paths**
+  - Test retry behavior and final failure conditions explicitly
+
+#### Advanced performance tracking
+- **Timing decorator**
+  - Implement a custom decorator to measure execution time of API calls
+  - Use `time.perf_counter()` for high-precision timing
+- **Observability**
+  - Log timing information at `DEBUG` level to avoid polluting normal output
+
+#### 🏆 Success criteria
+- **Observable:** Retry attempts and timings are visible in logs
+- **Secure:** API keys never appear in Git history or logs
+- **Typed:** MyPy passes with zero errors in strict mode
+- **Resilient:** With Wi-Fi disabled, the app retries, then exits with a clear, user-friendly error instead of a raw stack trace
 
 
 ## Resources (latest Python, production-focused)
@@ -267,9 +303,10 @@
     - Model validation
     - Settings management
 
+**Use only when relevant:**
 - [HTTPX docs](https://www.python-httpx.org)
 - [uv docs](https://docs.astral.sh/uv/)
 - [Ruff docs](https://docs.astral.sh/ruff/)
 - [Tenacity docs](https://tenacity.readthedocs.io/en/latest/)
 - [pytest docs](https://docs.pytest.org/en/stable/)
-- [Python Packaging Authority docs](https://www.pypa.io/en/latest/)
+- [Python Packaging Authority docs](https://www.pypa.io/en/latest/) 
