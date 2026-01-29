@@ -163,7 +163,7 @@
 
 5. **Production Python (~4 weeks)**
    - **APIs & networking**
-     - `requests` (sync, baseline)
+     - `requests` (sync baseline)
      - `httpx` (async)
      - HTTP status codes
      - Retries and timeouts (`tenacity`)
@@ -190,8 +190,24 @@
 
    **Outcome:** You can build, test, and run a small API service that talks to external APIs and doesn’t fall over.
 
+6. **Data persistence for AI (~3-4 days)**
+   - **SQLite**
+     - Local `.db` file
+     - Schema-first thinking
+   - **SQLModel**
+     - Typed models
+     - Minimal relationships
+     - Unique constraints (deduplication)
+   - **Persistence patterns**
+     - `get_or_create`
+     - Idempotent writes
+   - **Testing**
+     - In-memory SQLite (`:memory:`)
+     - Isolated fixtures
 
-6. **Advanced Python (~5 days total, spread opportunistically)**
+   **Outcome:** Your systems have memory; reruns are deterministic and non-duplicating.
+
+7. **Advanced Python (~5 days total, spread opportunistically)**
    - Decorators (very important)
    - Generators
    - Context managers
@@ -203,7 +219,7 @@
 
 ### The "News Intelligence CLI"
 
-**Goal:** Build a command-line tool that aggregates news from an external API, validates incoming data, survives network instability, and makes its behavior observable through structured logs.
+**Goal:** Build a persistent news aggregation system that fetches data from an external API, validates and stores it reliably, survives network instability, and makes its behavior observable through structured logs.
 
 #### Environment & secure workflow
 - **Tooling**
@@ -221,16 +237,35 @@
   - a **CLI entry point**
   - a **FastAPI endpoint**
 - No duplicated logic between CLI and API
+- Core logic must be framework-agnostic (pure Python)
+
+#### Data model & persistence
+- **Database**
+  - Use local **SQLite** (`news.db`)
+  - No external services, no infra setup
+- **SQLModel schemas**
+  - `Article`
+    - `id`
+    - `title`
+    - `url` (unique)
+    - `content`
+    - `source`
+    - `published_at`
+    - `created_at`
+- **Persistence patterns**
+  - Implement `get_or_create` to prevent duplicate articles
+  - All writes must be idempotent
+  - Rerunning the same fetch must not create new rows
 
 #### Robust data handling
-- **Pydantic models**
-  - Define a `NewsArticle` schema
-  - Parse raw API JSON into typed objects
+- **Pydantic / SQLModel models**
+  - Parse raw API JSON into typed objects before persistence
+  - Reject invalid payloads early
 - **Structured logging**
   - Replace all `print()` statements with the standard `logging` module
   - Configure JSON-formatted logs so output is machine-parsable
 - **Failure visibility**
-  - On Pydantic validation errors, log:
+  - On validation errors, log:
     - which fields failed
     - why they failed
   - Never log a generic “data error” without context
@@ -248,30 +283,38 @@
 #### API exposure (minimal)
 - Wrap the core logic in a simple **FastAPI** app
   - Endpoint: `/news/{category}`
-  - Reuse Pydantic models for request / response schemas
+  - Reads from the database, not directly from the external API
+  - Reuse Pydantic / SQLModel schemas for responses
 - Local execution only (no deployment concerns)
 
 #### Testing
+- **Database tests**
+  - Use in-memory SQLite (`:memory:`) via SQLModel
+  - Isolated pytest fixtures per test
 - **Validation tests**
-  - Unit-test Pydantic models with valid and invalid payloads
+  - Unit-test models with valid and invalid payloads
 - **Networking tests**
-  - Use `pytest` + `respx` (or `pytest-httpx`) to mock `httpx` calls
+  - Use `pytest` + `respx` (or `pytest-httpx`) to mock `httpx`
   - Ensure tests never hit the real external API
 - **Failure paths**
-  - Test retry behavior and final failure conditions explicitly
+  - Test retry behavior
+  - Test deduplication logic explicitly
 
 #### Advanced performance tracking
 - **Timing decorator**
-  - Implement a custom decorator to measure execution time of API calls
+  - Implement a custom decorator to measure execution time of:
+    - API fetch
+    - database writes
   - Use `time.perf_counter()` for high-precision timing
 - **Observability**
-  - Log timing information at `DEBUG` level to avoid polluting normal output
+  - Log timing information at `DEBUG` level only
 
 #### 🏆 Success criteria
-- **Observable:** Retry attempts and timings are visible in logs
+- **Persistent:** Re-running the CLI does not duplicate articles
+- **Observable:** Retry attempts, timings, and DB writes are visible in logs
 - **Secure:** API keys never appear in Git history or logs
 - **Typed:** MyPy passes with zero errors in strict mode
-- **Resilient:** With Wi-Fi disabled, the app retries, then exits with a clear, user-friendly error instead of a raw stack trace
+- **Resilient:** With Wi-Fi disabled, the app retries, then exits with a clear, user-friendly error
 
 
 ## Resources (latest Python, production-focused)
@@ -309,4 +352,5 @@
 - [Ruff docs](https://docs.astral.sh/ruff/)
 - [Tenacity docs](https://tenacity.readthedocs.io/en/latest/)
 - [pytest docs](https://docs.pytest.org/en/stable/)
+- [SQLModel docs](https://sqlmodel.tiangolo.com/)
 - [Python Packaging Authority docs](https://www.pypa.io/en/latest/) 
