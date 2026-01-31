@@ -134,6 +134,7 @@
    - **Data validation**
      - `pydantic.BaseModel`
      - Parsing external JSON → typed objects
+     - Pydantic validators (`@field_validator`, `@model_validator)` → schema-level data safety
      - Validation errors vs runtime errors
    - **Logging**
      - `logging`
@@ -171,6 +172,9 @@
    - **Async Python**
      - `async / await`
      - `asyncio.gather`
+     - `asyncio.Semaphore` (bounded concurrency / rate limiting)
+     - `asyncio.Lock`
+     - `asyncio.wait_for` → hard timeouts / circuit breaking
      - When async is worth it (parallel I/O)
    - **FastAPI** (basics)
      - App structure
@@ -353,4 +357,10 @@
 - [Tenacity docs](https://tenacity.readthedocs.io/en/latest/)
 - [pytest docs](https://docs.pytest.org/en/stable/)
 - [SQLModel docs](https://sqlmodel.tiangolo.com/)
-- [Python Packaging Authority docs](https://www.pypa.io/en/latest/) 
+- [Python Packaging Authority docs](https://www.pypa.io/en/latest/)
+
+
+## Relevant books
+* [Fluent Python](https://www.oreilly.com/library/view/fluent-python/9781491946237/ch02.html)
+* [Effective Python](https://effectivepython.com)
+* [Architecture Patterns with Python](https://www.oreilly.com/library/view/architecture-patterns-with/9781492052197/)
